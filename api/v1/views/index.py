@@ -1,32 +1,30 @@
 #!/usr/bin/python3
-'''api status'''
+"""import app_views from api.v1.views"""
+from flask import jsonify
 import models
-from models import storage
+from api.v1.views import app_views
 from models.amenity import Amenity
-from models.base_model import BaseModel
 from models.city import City
 from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
-from flask import jsonify
-from api.v1.views import app_views
 
 
-@app_views.route('/status', strict_slashes=False)
-def returnstuff():
-    '''return stuff'''
-    return jsonify(status='OK')
+@app_views.route("/status", strict_slashes=False)
+def view_status():
+    """create a route /status on the object app_views that returns a JSON"""
+    return jsonify({"status": "OK"})
 
 
-@app_views.route('/stats', strict_slashes=False)
-def stuff():
-    '''JSON Responses'''
-    todos = {
-        'states': State, 'users': User,
-        'amenities': Amenity, 'cities': City,
-        'places': Place, 'reviews': Review
-    }
-    for key in todos:
-        todos[key] = storage.count(todos[key])
-    return jsonify(todos)
+@app_views.route("/stats", strict_slashes=False)
+def view_stats():
+    """Veiw function that retrieves the number of each object by type"""
+    return jsonify({
+        "amenities": models.storage.count(Amenity),
+        "cities": models.storage.count(City),
+        "places": models.storage.count(Place),
+        "reviews": models.storage.count(Review),
+        "states": models.storage.count(State),
+        "users": models.storage.count(User)
+    })
